@@ -44,10 +44,10 @@ mirrors_bridges = {
 # TODO: Import this configuration from a yaml or json file
 # SSH initialisation to execute OVS-related commands. CHANGE the client.connect(..) with the credentials used by the
 # host that runs the OVSDB server.
-key = paramiko.RSAKey.from_private_key_file("/root/.ssh/proxmox-private.key")
+key = paramiko.RSAKey.from_private_key_file("proxmox-private.key")
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-client.connect('192.168.86.254', username='root', pkey=key)
+client.connect('example.com', username='root', pkey=key)
 
 # This command returns the name of a bridge, given its datapath id.
 def find_bridge(dpid):
@@ -104,7 +104,8 @@ def refresh_mirrors(self, current_bridge, default_src_port=True):
     for iface in ifaces_src:
         cmd = cmd + " -- --id=@src" + str(counter_src) + " get Port " + iface
         counter_src = counter_src + 1
-    
+        
+    # This is needed if you want also to monitor the host management interface
     if current_bridge == "vmbr0":
         cmd = cmd + " -- --id=@src" + str(counter_src) + " get Port vmbr0"
         counter_src = counter_src + 1
